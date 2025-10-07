@@ -66,20 +66,20 @@ python tgnn_new.py --task regression --train_path snapshot_train80_enhanced.pkl 
 #### 完整架构概览
 ```mermaid
 graph TD
-    A[输入特征<br/>[N, input_dim]] --> B[GCN层<br/>SpatialGCNLayer]
-    B --> C[空间特征<br/>[N, 128]]
-    C --> D[GRU层<br/>MemoryUnit]
-    D --> E[时序特征<br/>[N, 64]]
-    E --> F[GAT层<br/>AttentionLayer]
-    F --> G[注意力特征<br/>[N, 256]]
-    G --> H[输出层1<br/>Linear + ReLU + Dropout]
-    H --> I[中间特征<br/>[N, 32]]
-    I --> J[输出层2<br/>Linear]
-    J --> K[仇恨分数<br/>[N, 1]]
+    A["输入特征<br/>N×input_dim"] --> B["GCN层<br/>SpatialGCNLayer"]
+    B --> C["空间特征<br/>N×128"]
+    C --> D["GRU层<br/>MemoryUnit"]
+    D --> E["时序特征<br/>N×64"]
+    E --> F["GAT层<br/>AttentionLayer"]
+    F --> G["注意力特征<br/>N×256"]
+    G --> H["输出层1<br/>Linear + ReLU + Dropout"]
+    H --> I["中间特征<br/>N×32"]
+    I --> J["输出层2<br/>Linear"]
+    J --> K["仇恨分数<br/>N×1"]
     
-    L[时间衰减<br/>0.7] --> D
-    M[自适应衰减<br/>学习性门控] --> D
-    N[目标归一化<br/>Z-score] --> O[损失函数<br/>MSE + 相关性]
+    L["时间衰减<br/>0.7"] --> D
+    M["自适应衰减<br/>学习性门控"] --> D
+    N["目标归一化<br/>Z-score"] --> O["损失函数<br/>MSE + 相关性"]
     K --> O
     
     style A fill:#e1f5fe
@@ -92,16 +92,16 @@ graph TD
 #### 数据流与维度变化
 ```mermaid
 graph LR
-    A["输入特征<br/>[N, input_dim]<br/>~节点特征"] --> B["GCN层<br/>GCNConv + Norm + ReLU + Dropout<br/>参数: ~16K"]
-    B --> C["空间特征<br/>[N, 128]<br/>空间关系"]
+    A["输入特征<br/>N×input_dim<br/>~节点特征"] --> B["GCN层<br/>GCNConv + Norm + ReLU + Dropout<br/>参数: ~16K"]
+    B --> C["空间特征<br/>N×128<br/>空间关系"]
     C --> D["GRU层<br/>2层GRU + 自适应衰减<br/>参数: ~25K"]
-    D --> E["时序特征<br/>[N, 64]<br/>时序依赖"]
+    D --> E["时序特征<br/>N×64<br/>时序依赖"]
     E --> F["GAT层<br/>8头注意力 + Norm + ReLU<br/>参数: ~20K"]
-    F --> G["注意力特征<br/>[N, 256]<br/>32×8头"]
+    F --> G["注意力特征<br/>N×256<br/>32×8头"]
     G --> H["输出层1<br/>Linear(256→32) + ReLU + Dropout<br/>参数: ~8K"]
-    H --> I["中间层<br/>[N, 32]"]
+    H --> I["中间层<br/>N×32"]
     I --> J["输出层2<br/>Linear(32→1)<br/>参数: ~33"]
-    J --> K["仇恨分数<br/>[N, 1]<br/>连续值"]
+    J --> K["仇恨分数<br/>N×1<br/>连续值"]
     
     style A fill:#e1f5fe
     style C fill:#f3e5f5

@@ -66,20 +66,20 @@ python tgnn_new.py --task regression --train_path snapshot_train80_enhanced.pkl 
 #### Complete Architecture Overview
 ```mermaid
 graph TD
-    A[Input Features<br/>[N, input_dim]] --> B[GCN Layer<br/>SpatialGCNLayer]
-    B --> C[Spatial Features<br/>[N, 128]]
-    C --> D[GRU Layer<br/>MemoryUnit]
-    D --> E[Temporal Features<br/>[N, 64]]
-    E --> F[GAT Layer<br/>AttentionLayer]
-    F --> G[Attention Features<br/>[N, 256]]
-    G --> H[Output Layer 1<br/>Linear + ReLU + Dropout]
-    H --> I[Intermediate Features<br/>[N, 32]]
-    I --> J[Output Layer 2<br/>Linear]
-    J --> K[Hate Scores<br/>[N, 1]]
+    A["Input Features<br/>N×input_dim"] --> B["GCN Layer<br/>SpatialGCNLayer"]
+    B --> C["Spatial Features<br/>N×128"]
+    C --> D["GRU Layer<br/>MemoryUnit"]
+    D --> E["Temporal Features<br/>N×64"]
+    E --> F["GAT Layer<br/>AttentionLayer"]
+    F --> G["Attention Features<br/>N×256"]
+    G --> H["Output Layer 1<br/>Linear + ReLU + Dropout"]
+    H --> I["Intermediate Features<br/>N×32"]
+    I --> J["Output Layer 2<br/>Linear"]
+    J --> K["Hate Scores<br/>N×1"]
     
-    L[Time Decay<br/>0.7] --> D
-    M[Adaptive Decay<br/>Learnable Gate] --> D
-    N[Target Normalization<br/>Z-score] --> O[Loss Function<br/>MSE + Correlation]
+    L["Time Decay<br/>0.7"] --> D
+    M["Adaptive Decay<br/>Learnable Gate"] --> D
+    N["Target Normalization<br/>Z-score"] --> O["Loss Function<br/>MSE + Correlation"]
     K --> O
     
     style A fill:#e1f5fe
@@ -92,16 +92,16 @@ graph TD
 #### Data Flow and Dimension Changes
 ```mermaid
 graph LR
-    A["Input Features<br/>[N, input_dim]<br/>~Node Features"] --> B["GCN Layer<br/>GCNConv + Norm + ReLU + Dropout<br/>Parameters: ~16K"]
-    B --> C["Spatial Features<br/>[N, 128]<br/>Spatial Relationships"]
+    A["Input Features<br/>N×input_dim<br/>~Node Features"] --> B["GCN Layer<br/>GCNConv + Norm + ReLU + Dropout<br/>Parameters: ~16K"]
+    B --> C["Spatial Features<br/>N×128<br/>Spatial Relationships"]
     C --> D["GRU Layer<br/>2-layer GRU + Adaptive Decay<br/>Parameters: ~25K"]
-    D --> E["Temporal Features<br/>[N, 64]<br/>Temporal Dependencies"]
+    D --> E["Temporal Features<br/>N×64<br/>Temporal Dependencies"]
     E --> F["GAT Layer<br/>8-head Attention + Norm + ReLU<br/>Parameters: ~20K"]
-    F --> G["Attention Features<br/>[N, 256]<br/>32×8 heads"]
+    F --> G["Attention Features<br/>N×256<br/>32×8 heads"]
     G --> H["Output Layer 1<br/>Linear(256→32) + ReLU + Dropout<br/>Parameters: ~8K"]
-    H --> I["Intermediate<br/>[N, 32]"]
+    H --> I["Intermediate<br/>N×32"]
     I --> J["Output Layer 2<br/>Linear(32→1)<br/>Parameters: ~33"]
-    J --> K["Hate Scores<br/>[N, 1]<br/>Continuous Values"]
+    J --> K["Hate Scores<br/>N×1<br/>Continuous Values"]
     
     style A fill:#e1f5fe
     style C fill:#f3e5f5
